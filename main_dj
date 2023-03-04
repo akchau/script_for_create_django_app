@@ -1,0 +1,30 @@
+#!/bin/bash
+git_acount=akchau
+
+read -r -p "Введите название репозитория: " folder
+read -r -p "Введите название проекта: " project
+
+commit_message="Создан проект $project. В нем создано приложение users. В нем добавлен urls.py. Удален файл test.py. Подготовлена директория на уровне проекта для приложения users."
+echo "------Клонирование репозитория $folder-------"
+git clone "git@github.com:$git_acount/$folder.git"
+cd $folder
+echo "-----------Установка окружения---------------"
+python -m pip install --upgrade pip
+pip install Django flake8
+pip freeze > requirements.txt
+echo "-----------Старт проекта $project-----------"
+django-admin startproject $project
+echo "Создано проект $project"
+cd $project
+echo "-----------Старт приложения $users----------"
+python manage.py startapp users
+echo "Создано приложение пользователя users"
+touch users/urls.py
+rm users/tests.py
+mkdir -p templates/users
+echo "-Подготовлены шаблоны на уровне проекта"
+echo "--------------------Коммит------------------"
+git add ..
+git commit -m "$commit_message"
+git push
+echo "--------------------Готово!-----------------"
